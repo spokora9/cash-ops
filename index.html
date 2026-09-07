@@ -923,9 +923,148 @@
       .timeline-wrap { padding-left: 14px; }
       .timeline-dot { left: -14px; width: 10px; height: 10px; }
     }
+
+    /* Client-Side Lock Screen Overlay */
+    #lockOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #080b12;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+    }
+
+    .lock-card {
+      background: #111724;
+      border: 1px solid #26334d;
+      border-radius: 16px;
+      padding: 32px 24px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.8);
+    }
+
+    .lock-icon {
+      font-size: 2.2rem;
+      margin-bottom: 12px;
+      display: inline-block;
+      animation: floatIcon 3s ease-in-out infinite;
+    }
+
+    @keyframes floatIcon {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    .lock-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: #e6edf3;
+      margin-bottom: 4px;
+    }
+
+    .lock-title span {
+      color: #e5a93c;
+    }
+
+    .lock-subtitle {
+      font-size: 0.76rem;
+      color: #8b949e;
+      font-family: var(--font-mono);
+      margin-bottom: 22px;
+    }
+
+    .lock-input-group {
+      margin-bottom: 14px;
+    }
+
+    .lock-input {
+      width: 100%;
+      padding: 12px 14px;
+      background: #090c14;
+      border: 1px solid #26334d;
+      border-radius: 8px;
+      color: #e6edf3;
+      font-size: 1.05rem;
+      text-align: center;
+      font-family: var(--font-mono);
+      letter-spacing: 0.15em;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .lock-input:focus {
+      border-color: #e5a93c;
+      box-shadow: 0 0 10px rgba(229, 169, 60, 0.2);
+    }
+
+    .lock-btn {
+      width: 100%;
+      padding: 12px;
+      background: #e5a93c;
+      color: #080b12;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .lock-btn:hover {
+      background: #f0b54d;
+    }
+
+    .lock-remember {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 0.74rem;
+      color: #8b949e;
+      cursor: pointer;
+    }
+
+    .lock-error {
+      color: #f43f5e;
+      font-size: 0.76rem;
+      font-family: var(--font-mono);
+      margin-top: 10px;
+      display: none;
+    }
   </style>
 </head>
 <body>
+
+  <!-- In-App Password Shield -->
+  <div id="lockOverlay">
+    <div class="lock-card">
+      <div class="lock-icon">🔒</div>
+      <div class="lock-title">CASH OPS <span>COMMAND</span></div>
+      <div class="lock-subtitle">ASTRO ENGINE · RESTRICTED ACCESS</div>
+      <form onsubmit="event.preventDefault(); unlockApp();">
+        <div class="lock-input-group">
+          <input type="password" class="lock-input" id="lockPassInput" placeholder="ENTER PASSWORD" autocomplete="current-password" autofocus>
+        </div>
+        <button type="submit" class="lock-btn">UNLOCK DASHBOARD</button>
+        <div class="lock-error" id="lockErrorMsg">INVALID PASSWORD — ACCESS DENIED</div>
+        <label class="lock-remember">
+          <input type="checkbox" id="rememberDevice" checked>
+          <span>Keep unlocked on this device</span>
+        </label>
+      </form>
+    </div>
+  </div>
 
   <!-- Sticky Header & Segmented Navigation -->
   <header>
@@ -1941,8 +2080,51 @@ Email: spokora9@gmail.com | WhatsApp/Signal: +48 783 570 154</div>
       }
     }
 
+    // Authentication Gate (Password: myth)
+    const AUTH_KEY = 'cash_ops_pwa_auth_v1';
+    function checkAuth() {
+      const isAuth = localStorage.getItem(AUTH_KEY) === 'true' || sessionStorage.getItem(AUTH_KEY) === 'true';
+      const overlay = document.getElementById('lockOverlay');
+      if (isAuth && overlay) {
+        overlay.style.display = 'none';
+      } else if (overlay) {
+        overlay.style.display = 'flex';
+        const input = document.getElementById('lockPassInput');
+        if (input) setTimeout(() => input.focus(), 150);
+      }
+    }
+
+    function unlockApp() {
+      const input = document.getElementById('lockPassInput');
+      const error = document.getElementById('lockErrorMsg');
+      const remember = document.getElementById('rememberDevice').checked;
+      
+      if (input && input.value.trim().toLowerCase() === 'myth') {
+        sessionStorage.setItem(AUTH_KEY, 'true');
+        if (remember) {
+          localStorage.setItem(AUTH_KEY, 'true');
+        }
+        const overlay = document.getElementById('lockOverlay');
+        if (overlay) {
+          overlay.style.opacity = '0';
+          overlay.style.transition = 'opacity 0.25s ease';
+          setTimeout(() => overlay.style.display = 'none', 250);
+        }
+      } else {
+        if (error) error.style.display = 'block';
+        if (input) {
+          input.value = '';
+          input.style.borderColor = '#f43f5e';
+          input.focus();
+        }
+      }
+    }
+
     // Initialize
-    window.addEventListener('DOMContentLoaded', loadChecklistState);
+    window.addEventListener('DOMContentLoaded', () => {
+      checkAuth();
+      loadChecklistState();
+    });
   </script>
 </body>
 </html>
