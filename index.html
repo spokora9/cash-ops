@@ -1,0 +1,1948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CashOps">
+  <meta name="theme-color" content="#0d1117">
+  
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  
+  <title>Cash Ops & Astro Command · Sebastian Pokora</title>
+  <style>
+    :root {
+      --bg-base: #0a0d14;
+      --bg-card: #121824;
+      --bg-card-hover: #172030;
+      --bg-subtle: #1c2638;
+      --text-main: #e6edf3;
+      --text-muted: #8b949e;
+      --text-dim: #6e7681;
+      --accent-gold: #e5a93c;
+      --accent-gold-glow: rgba(229, 169, 60, 0.15);
+      --accent-cyan: #38bdf8;
+      --accent-cyan-glow: rgba(56, 189, 248, 0.15);
+      --accent-emerald: #10b981;
+      --accent-emerald-glow: rgba(16, 185, 129, 0.15);
+      --accent-rose: #f43f5e;
+      --accent-purple: #a855f7;
+      --border-color: #26334d;
+      --border-focus: #38bdf8;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 2px 6px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+      --shadow-lg: 0 8px 30px rgba(0,0,0,0.6);
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.5;
+      padding-bottom: 90px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* Sticky Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 13, 20, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 16px;
+    }
+
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #1c2638, #121824);
+      border: 1px solid var(--accent-gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .brand-text h1 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-text h1 span {
+      color: var(--accent-gold);
+    }
+
+    .brand-subtitle {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .header-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      background: var(--bg-subtle);
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+      color: var(--accent-emerald);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      box-shadow: 0 0 6px var(--accent-emerald);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* Navigation Tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      background: #0d121c;
+      padding: 4px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .nav-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-tab-btn {
+      flex: 1;
+      min-width: fit-content;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .nav-tab-btn.active {
+      background: var(--bg-subtle);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-tab-btn.active.gold { border-color: var(--accent-gold); color: var(--accent-gold); }
+    .nav-tab-btn.active.cyan { border-color: var(--accent-cyan); color: var(--accent-cyan); }
+    .nav-tab-btn.active.purple { border-color: var(--accent-purple); color: var(--accent-purple); }
+    .nav-tab-btn.active.emerald { border-color: var(--accent-emerald); color: var(--accent-emerald); }
+
+    /* Target Bar */
+    .target-banner {
+      background: linear-gradient(135deg, rgba(229,169,60,0.12), rgba(16,185,129,0.08));
+      border: 1px solid var(--accent-gold);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      margin-top: 14px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .target-info h3 {
+      font-size: 0.92rem;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+
+    .target-info p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .target-numbers {
+      display: flex;
+      gap: 16px;
+      text-align: right;
+    }
+
+    .target-stat {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-label {
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+    }
+
+    .stat-val {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent-emerald);
+      font-family: var(--font-mono);
+    }
+
+    .stat-val.gold { color: var(--accent-gold); }
+
+    /* Progress Widget */
+    .progress-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding: 10px 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+    }
+
+    .progress-bar-bg {
+      flex: 1;
+      height: 7px;
+      background: var(--bg-subtle);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-gold), var(--accent-emerald));
+      border-radius: 999px;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .progress-text {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--text-main);
+      min-width: 65px;
+      text-align: right;
+    }
+
+    /* Tab Content Panes */
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+      animation: fadeIn 0.2s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Checklist Elements */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .checklist-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-sm {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-sm:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-main);
+      border-color: var(--accent-cyan);
+    }
+
+    .checklist-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .checklist-group-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-cyan);
+      font-family: var(--font-mono);
+      margin: 14px 0 8px 0;
+      padding-bottom: 4px;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
+    .checklist-group-title:first-child {
+      margin-top: 0;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 8px;
+      border-radius: var(--radius-sm);
+      transition: background 0.15s;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .task-item:last-child {
+      border-bottom: none;
+    }
+
+    .task-item:hover {
+      background: var(--bg-subtle);
+    }
+
+    .task-checkbox {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border-color);
+      border-radius: 5px;
+      background: var(--bg-base);
+      cursor: pointer;
+      position: relative;
+      margin-top: 2px;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .task-checkbox:checked {
+      background: var(--accent-emerald);
+      border-color: var(--accent-emerald);
+    }
+
+    .task-checkbox:checked::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .task-content {
+      flex: 1;
+    }
+
+    .task-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .task-label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    .task-checkbox:checked ~ .task-content .task-label {
+      text-decoration: line-through;
+      color: var(--text-dim);
+    }
+
+    .task-yield {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: var(--accent-gold);
+      font-weight: 600;
+      background: var(--accent-gold-glow);
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    .task-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    .jump-btn {
+      font-size: 0.7rem;
+      color: var(--accent-cyan);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      margin-left: 6px;
+    }
+
+    /* Accordion / Details */
+    .details-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      margin-bottom: 14px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: border-color 0.2s;
+    }
+
+    .details-card[open] {
+      border-color: var(--border-focus);
+    }
+
+    summary {
+      list-style: none;
+      padding: 14px 18px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-card);
+      user-select: none;
+      transition: background 0.15s;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .summary-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .summary-icon {
+      font-size: 1.2rem;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      background: var(--bg-subtle);
+    }
+
+    .summary-text h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .summary-text p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .summary-badges {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-tag {
+      font-size: 0.68rem;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+    }
+
+    .tag-emerald { background: rgba(16,185,129,0.15); color: var(--accent-emerald); border-color: var(--accent-emerald); }
+    .tag-cyan { background: rgba(56,189,248,0.15); color: var(--accent-cyan); border-color: var(--accent-cyan); }
+    .tag-gold { background: rgba(229,169,60,0.15); color: var(--accent-gold); border-color: var(--accent-gold); }
+    .tag-rose { background: rgba(244,63,94,0.15); color: var(--accent-rose); border-color: var(--accent-rose); }
+    .tag-purple { background: rgba(168,85,247,0.15); color: var(--accent-purple); border-color: var(--accent-purple); }
+
+    .chevron {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      transition: transform 0.2s ease;
+    }
+
+    details[open] summary .chevron {
+      transform: rotate(90deg);
+      color: var(--accent-cyan);
+    }
+
+    .details-body {
+      padding: 18px;
+      border-top: 1px solid var(--border-color);
+      background: #0f141f;
+      font-size: 0.86rem;
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    /* Callouts */
+    .callout {
+      border-left: 4px solid var(--accent-cyan);
+      background: var(--bg-subtle);
+      padding: 12px 14px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin: 12px 0;
+      font-size: 0.82rem;
+    }
+
+    .callout.danger {
+      border-left-color: var(--accent-rose);
+      background: rgba(244, 63, 94, 0.08);
+    }
+
+    .callout.warning {
+      border-left-color: var(--accent-gold);
+      background: rgba(229, 169, 60, 0.08);
+    }
+
+    .callout.success {
+      border-left-color: var(--accent-emerald);
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    .callout.astrology {
+      border-left-color: var(--accent-purple);
+      background: rgba(168, 85, 247, 0.08);
+    }
+
+    .callout h4 {
+      font-size: 0.86rem;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Tables */
+    .data-table-wrap {
+      overflow-x: auto;
+      margin: 14px 0;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      text-align: left;
+    }
+
+    table.data-table th {
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border-color);
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.04em;
+    }
+
+    table.data-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+    }
+
+    table.data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .rate-pill {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--accent-emerald);
+    }
+
+    /* Copy Box */
+    .copy-box {
+      background: #090c12;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      margin: 12px 0;
+    }
+
+    .copy-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .copy-box-title {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .copy-btn {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      border-color: var(--accent-cyan);
+      background: var(--bg-card-hover);
+    }
+
+    .copy-text {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: #c9d1d9;
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.5;
+    }
+
+    /* Action Buttons */
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0 6px 0;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .action-btn.primary {
+      background: var(--accent-emerald);
+      color: #041d13;
+      border: 1px solid var(--accent-emerald);
+    }
+
+    .action-btn.secondary {
+      background: var(--bg-subtle);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+    }
+
+    /* Steps List */
+    .steps-list {
+      list-style: none;
+      counter-reset: step-counter;
+      margin: 12px 0;
+    }
+
+    .steps-list li {
+      position: relative;
+      padding-left: 32px;
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+
+    .steps-list li::before {
+      counter-increment: step-counter;
+      content: counter(step-counter);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 22px;
+      height: 22px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      color: var(--accent-cyan);
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Astro Timeline Styles */
+    .timeline-wrap {
+      position: relative;
+      padding-left: 20px;
+      margin: 16px 0;
+    }
+
+    .timeline-wrap::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 4px;
+      bottom: 4px;
+      width: 2px;
+      background: var(--border-color);
+    }
+
+    .timeline-node {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -20px;
+      top: 3px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--bg-base);
+      border: 2px solid var(--accent-gold);
+    }
+
+    .timeline-dot.critical {
+      border-color: var(--accent-rose);
+      box-shadow: 0 0 6px var(--accent-rose);
+    }
+
+    .timeline-dot.launch {
+      border-color: var(--accent-emerald);
+      box-shadow: 0 0 6px var(--accent-emerald);
+    }
+
+    .timeline-dot.saturn {
+      border-color: var(--accent-purple);
+    }
+
+    .timeline-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .timeline-date {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+    }
+
+    .timeline-aspect {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      background: var(--bg-subtle);
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: var(--accent-cyan);
+    }
+
+    .timeline-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .timeline-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .timeline-law {
+      font-size: 0.76rem;
+      font-family: var(--font-mono);
+      color: var(--accent-emerald);
+      background: rgba(16, 185, 129, 0.08);
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      margin-top: 8px;
+      border-left: 3px solid var(--accent-emerald);
+    }
+
+    .timeline-law.warning {
+      color: var(--accent-rose);
+      background: rgba(244, 63, 94, 0.08);
+      border-left-color: var(--accent-rose);
+    }
+
+    /* PWA Install Banner */
+    .pwa-banner {
+      display: none;
+      background: linear-gradient(135deg, #1c2638, #121824);
+      border: 1px solid var(--accent-cyan);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .pwa-banner.show {
+      display: flex;
+    }
+
+    .pwa-banner-text h4 {
+      font-size: 0.88rem;
+      color: var(--text-main);
+    }
+
+    .pwa-banner-text p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .container { padding: 12px; }
+      header { padding: 10px 12px; }
+      .target-numbers { flex-direction: column; gap: 4px; text-align: left; }
+      .summary-badges { display: none; }
+      .timeline-wrap { padding-left: 14px; }
+      .timeline-dot { left: -14px; width: 10px; height: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Header & Segmented Navigation -->
+  <header>
+    <div class="header-inner">
+      <div class="header-top">
+        <div class="brand">
+          <div class="brand-icon">⚡</div>
+          <div class="brand-text">
+            <h1>CASH OPS <span>COMMAND</span></h1>
+            <div class="brand-subtitle" id="topDateSubtitle">September 2026 · Dual US/PL Currency Pipe</div>
+          </div>
+        </div>
+        <div class="header-status">
+          <span class="status-dot"></span>
+          <span id="astralStatus">Venus Conjunct MC</span>
+        </div>
+      </div>
+
+      <!-- Main Navigation Tabs -->
+      <nav class="nav-tabs" role="tablist">
+        <button class="nav-tab-btn active gold" onclick="switchTab('tab-cash', this)">
+          <span>⚡ Cash Ops</span>
+        </button>
+        <button class="nav-tab-btn purple" onclick="switchTab('tab-astro', this)">
+          <span>🌌 Astro Calendar</span>
+        </button>
+        <button class="nav-tab-btn cyan" onclick="switchTab('tab-paternal', this)">
+          <span>🛡️ Paternal Protocol</span>
+        </button>
+        <button class="nav-tab-btn emerald" onclick="switchTab('tab-products', this)">
+          <span>📦 Product Ship List</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- PWA Install Banner -->
+    <div class="pwa-banner" id="pwaBanner">
+      <div class="pwa-banner-text">
+        <h4>📲 Add Cash Ops to Phone Home Screen</h4>
+        <p>Install as an offline-ready standalone application on iOS/Android.</p>
+      </div>
+      <button class="action-btn primary" id="pwaInstallBtn" onclick="triggerPWAInstall()">Install</button>
+    </div>
+
+    <!-- Target Financial Metric Banner -->
+    <div class="target-banner">
+      <div class="target-info">
+        <h3>September–October Operating Objective</h3>
+        <p>Alimony floor: 2,400 PLN (~$620). Bridge target: $2,500 – $4,000 USD/mo via US banking rails.</p>
+      </div>
+      <div class="target-numbers">
+        <div class="target-stat">
+          <span class="stat-label">Alimony Obligation</span>
+          <span class="stat-val gold">2,400 PLN</span>
+        </div>
+        <div class="target-stat">
+          <span class="stat-label">AI Eval Hourly</span>
+          <span class="stat-val">$40 – $60/hr</span>
+        </div>
+        <div class="target-stat">
+          <span class="stat-label">Direct ESL Yield</span>
+          <span class="stat-val">120–150 PLN</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================================================== -->
+    <!-- TAB 1: CASH OPS & IMMEDIATE ACTION CHECKLIST -->
+    <!-- ==================================================== -->
+    <div class="tab-pane active" id="tab-cash">
+      
+      <!-- Progress Bar Card -->
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+        <div class="progress-text" id="progressText">0% Done</div>
+      </div>
+
+      <div class="section-header">
+        <div class="section-title">
+          <span>📋 Immediate Execution Checklist</span>
+        </div>
+        <div class="checklist-controls">
+          <button class="btn-sm" onclick="resetChecklist()">Reset</button>
+          <button class="btn-sm" onclick="checkAll()">Check All</button>
+        </div>
+      </div>
+
+      <div class="checklist-card">
+        
+        <div class="checklist-group-title">Phase 1: Immediate Cash Bridge (Tonight & 24 Hours)</div>
+
+        <div class="task-item">
+          <input type="checkbox" class="task-checkbox" id="task1" onchange="updateProgress()">
+          <div class="task-content">
+            <div class="task-title-row">
+              <label class="task-label" for="task1">1. Post Native English Ad on e-korepetycje.pl (130–150 PLN/hr)</label>
+              <span class="task-yield">130 PLN/hr</span>
+            </div>
+            <div class="task-desc">
+              September 1–15 is peak Matura Rozszerzona rush. Rejects 80 PLN lowball. 100% direct cash.
+              <button class="jump-btn" onclick="openAndScroll('sec-esl')">View Ad Template ↓</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <input type="checkbox" class="task-checkbox" id="task2" onchange="updateProgress()">
+          <div class="task-content">
+            <div class="task-title-row">
+              <label class="task-label" for="task2">2. Mirror Ad on OLX Szczecin (Korepetycje Angielski Native Speaker)</label>
+              <span class="task-yield">120–150 PLN/hr</span>
+            </div>
+            <div class="task-desc">
+              Direct local inbound in Szczecin. Focus on tech interviews and Matura preparation.
+              <button class="jump-btn" onclick="openAndScroll('sec-esl')">View Copy ↓</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <input type="checkbox" class="task-checkbox" id="task3" onchange="updateProgress()">
+          <div class="task-content">
+            <div class="task-title-row">
+              <label class="task-label" for="task3">3. Review AI Assessment Rules: Strict NO AI Generation</label>
+              <span class="task-yield">Safety Gate</span>
+            </div>
+            <div class="task-desc">
+              DataAnnotation automated classifiers flag LLM text. 2nd laptop permitted for official docs only.
+              <button class="jump-btn" onclick="openAndScroll('sec-da')">Review Rules ↓</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <input type="checkbox" class="task-checkbox" id="task4" onchange="updateProgress()">
+          <div class="task-content">
+            <div class="task-title-row">
+              <label class="task-label" for="task4">4. Take DataAnnotation.tech Coding Assessment</label>
+              <span class="task-yield">$40–$60+/hr</span>
+            </div>
+            <div class="task-desc">
+              Sign up with US credentials. Payouts every 3 days to PayPal. Work whenever you want.
+              <button class="jump-btn" onclick="openAndScroll('sec-da')">Step-by-Step ↓</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="checklist-group-title">Phase 2: Secondary Evaluation & $0 Music Pipe (48–72 Hours)</div>
+
+        <div class="task-item">
+          <input type="checkbox" class="task-checkbox" id="task5" onchange="updateProgress()">
+          <div class="task-content">
+            <div class="task-title-row">
+              <label class="task-label" for="task5">5. Set Up Free RouteNote Distribution Account ($0 Upfront)</label>
+              <span class="task-yield">85% Royalties ($0 Out of Pocket)</span>
+            </div>
+            <div class="task-desc">
+              Eliminates DistroKid paywall. Distributes virtual band to Spotify, Apple, YouTube Content ID.
+              <button class="jump-btn" onclick="openAndScroll('sec-routenote')">Setup RouteNote ↓</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <input type="checkbox" class="task-checkbox" id="task6" onchange="updateProgress()">
+          <div class="task-content">
+            <div class="task-title-row">
+              <label class="task-label" for="task6">6. Register on Outlier.ai & Alignerr (Software Specialist)</label>
+              <span class="task-yield">$30–$75+/hr</span>
+            </div>
+            <div class="task-desc">
+              Backup asynchronous evaluation streams. Lead with Python, Rust, and systems reasoning.
+              <button class="jump-btn" onclick="openAndScroll('sec-ai-platforms')">View Platforms ↓</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <input type="checkbox" class="task-checkbox" id="task7" onchange="updateProgress()">
+          <div class="task-content">
+            <div class="task-title-row">
+              <label class="task-label" for="task7">7. Post Tech English Ad on Superprof Germany & Netherlands</label>
+              <span class="task-yield">€40–€60/hr (~175–260 PLN)</span>
+            </div>
+            <div class="task-desc">
+              Target German and Dutch developers preparing for architectural pitches and promotion interviews.
+              <button class="jump-btn" onclick="openAndScroll('sec-esl')">View Ad Copy ↓</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Expandable Deep Dives -->
+      <!-- Details 1: DataAnnotation & AI Assessment -->
+      <details class="details-card" id="sec-da">
+        <summary>
+          <div class="summary-left">
+            <div class="summary-icon">🤖</div>
+            <div class="summary-text">
+              <h3>DataAnnotation.tech Coding Assessment Playbook</h3>
+              <p>Can you use AI? Rules, screening classifiers, and test strategy</p>
+            </div>
+          </div>
+          <div class="summary-badges">
+            <span class="badge-tag tag-rose">STRICT NO AI GEN</span>
+            <span class="badge-tag tag-emerald">$40–$60+/hr</span>
+            <span class="chevron">▶</span>
+          </div>
+        </summary>
+        <div class="details-body">
+          <div class="callout danger">
+            <h4>⚠️ THE STRICT VERDICT: CAN YOU USE AI?</h4>
+            <p><strong>NO. You CANNOT use ChatGPT, Claude, Copilot, or any LLM to generate code or write explanations.</strong></p>
+            <p style="margin-top:6px;">DataAnnotation runs automated stylometry classifiers on all submissions. If an LLM writes your code or explanations, the account will be shadow-banned without human feedback or appeal.</p>
+          </div>
+
+          <h4 style="margin: 14px 0 6px 0; color: var(--accent-gold);">Can You Have a Second Laptop Next to You?</h4>
+          <div class="callout warning">
+            <p><strong>YES, but exclusively for official documentation:</strong></p>
+            <ul style="margin: 6px 0 6px 20px;">
+              <li>✅ <strong>Allowed:</strong> Python standard docs, MDN Web Docs, Rust docs, Stack Overflow syntax lookups.</li>
+              <li>❌ <strong>Forbidden:</strong> Typing assessment questions into an LLM on the 2nd screen. Even if you manually re-type the answer, AI phrasing patterns get flagged.</li>
+            </ul>
+          </div>
+
+          <h4 style="margin: 14px 0 6px 0; color: var(--accent-cyan);">The Scoring Formula:</h4>
+          <ul class="steps-list">
+            <li><strong>Spot Subtle Edge Cases:</strong> Models fail on off-by-one errors, unhandled nulls, floating-point precision, and race conditions. Highlight them!</li>
+            <li><strong>Natural Engineer Tone:</strong> Write direct, concise critiques like: *"Model A has O(N²) time complexity due to nested lookups, whereas Model B correctly uses a hash map for O(N) performance, but forgot to handle empty inputs."*</li>
+            <li><strong>Follow Prompt Constraints:</strong> If instructions say "Do not import 3rd party libraries", stick 100% to standard library.</li>
+          </ul>
+
+          <div class="action-row">
+            <a href="https://www.dataannotation.tech/" target="_blank" class="action-btn primary">Open DataAnnotation.tech →</a>
+          </div>
+        </div>
+      </details>
+
+      <!-- Details 2: Direct ESL Launchpad -->
+      <details class="details-card" id="sec-esl">
+        <summary>
+          <div class="summary-left">
+            <div class="summary-icon">🌍</div>
+            <div class="summary-text">
+              <h3>Direct ESL Launchpad: Rates, Platforms & Copy-Paste Ads</h3>
+              <p>Szczecin, Poland, Germany, Netherlands, Norway & rejection of lowballs</p>
+            </div>
+          </div>
+          <div class="summary-badges">
+            <span class="badge-tag tag-emerald">120–150 PLN/hr</span>
+            <span class="badge-tag tag-cyan">€40–€60/hr EU</span>
+            <span class="chevron">▶</span>
+          </div>
+        </summary>
+        <div class="details-body">
+          <div class="callout danger">
+            <h4>🚫 WHY 80 PLN/HR GROSS FROM AGENCIES IS A TRAP</h4>
+            <p>Local schools offering ~80 PLN/hr gross yield <strong>~50–55 PLN net</strong> after ZUS and income tax. You'd need 48+ billable hours/mo just to clear the 2,400 PLN alimony floor! Direct listings on <code>e-korepetycje.pl</code> and OLX yield <strong>120–150 PLN net directly to your account</strong>.</p>
+          </div>
+
+          <h4 style="margin: 14px 0 6px 0; color: var(--accent-gold);">Live European Tutoring Rates Audit</h4>
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Territory / Channel</th>
+                  <th>Student Segment</th>
+                  <th>Going Rate</th>
+                  <th>Sebastian's Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Szczecin / Poland</strong> (e-korepetycje/OLX)</td>
+                  <td>Matura Rozszerzona, IT/Business Adults</td>
+                  <td>100–160 PLN / 60m</td>
+                  <td><span class="rate-pill">130 – 150 PLN</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Germany</strong> (Superprof.de)</td>
+                  <td>Tech Leads, Engineering Pitches</td>
+                  <td>€30–€55 / hr</td>
+                  <td><span class="rate-pill">€40 – €50 / hr (~175–220 PLN)</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Netherlands</strong> (Superprof.nl)</td>
+                  <td>Startup Founders, Senior Devs</td>
+                  <td>€35–€65 / hr</td>
+                  <td><span class="rate-pill">€45 – €60 / hr (~195–260 PLN)</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Norway</strong> (Expat / Direct)</td>
+                  <td>Executive Fluency</td>
+                  <td>350–600 NOK / hr</td>
+                  <td><span class="rate-pill">€45 – €65 / hr</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Ad Copy 1: Poland -->
+          <div class="copy-box">
+            <div class="copy-box-header">
+              <span class="copy-box-title">Polish Ad (e-korepetycje.pl & OLX Szczecin)</span>
+              <button class="copy-btn" onclick="copyToClipboard('ad-pl')">Copy Polish Ad 📋</button>
+            </div>
+            <div class="copy-text" id="ad-pl">Cześć! Nazywam się Sebastian. Jestem Native Speakerem języka angielskiego z USA (urodzony w Cambridge, Massachusetts) z ponad 10-letnim doświadczeniem w nauczaniu w Polsce. Posiadam brytyjski certyfikat TEFL (120h) oraz wieloletnie doświadczenie w renomowanych szkołach (m.in. Niepubliczna Szkoła Podstawowa Promyk – Szkoła jak Dom w Szczecinie, Vortex Company, Open Mind).
+
+W czym mogę Ci pomóc?
+
+1. MATURA ROZSZERZONA I PODSTAWOWA 2027 / EGZAMIN 8-KLASISTY:
+- Skuteczny, bezstresowy trening mówienia (100% płynności i przełamanie blokady językowej).
+- Praca na arkuszach CKE, precyzyjne słownictwo, opanowanie struktur gramatycznych bez wkuwania na pamięć.
+
+2. IT & TECH ENGLISH (Dla programistów, DevOps, Product Managerów):
+- Jako czynny Senior Software Engineer doskonale rozumiem specyfikę branży technologicznej.
+- Przygotowanie do rozmów rekrutacyjnych w zagranicznych software house'ach i korporacjach z USA/Wielkiej Brytanii.
+- Prowadzenie daily standupów, prezentacji architektonicznych i negocjacji z klientem anglojęzycznym.
+
+3. BUSINESS ENGLISH & PŁYNNA KONWERSACJA:
+- Przygotowanie do wystąpień, negocjacji i spotkań biznesowych.
+- Naturalna wymowa (amerykański akcent), idiomy i język nowoczesnego biznesu.
+
+FORMA ZAJĘĆ:
+Lekcje online (Google Meet / Zoom) z interaktywnymi materiałami, lub stacjonarnie w Szczecinie.
+Każda lekcja jest w 100% spersonalizowana pod Twoje cele.
+
+CENNIK:
+- 130 PLN / 60 minut (pojedyncza lekcja)
+- 120 PLN / lekcja przy pakiecie 10 spotkań
+(Dla par lub grup 2-osobowych: 80 PLN / os.)
+
+Zadzwoń lub napisz, aby ustalić bezpłatną, krótką rozmowę zapoznawczą:
+Tel: +48 783 570 154
+Email: spokora9@gmail.com</div>
+          </div>
+
+          <!-- Ad Copy 2: Superprof EU -->
+          <div class="copy-box">
+            <div class="copy-box-header">
+              <span class="copy-box-title">European Tech Ad (Superprof Germany & Netherlands)</span>
+              <button class="copy-btn" onclick="copyToClipboard('ad-eu')">Copy EU Ad 📋</button>
+            </div>
+            <div class="copy-text" id="ad-eu">Native English Coach from Cambridge, MA (USA) & Senior Software Engineer | Executive Speaking, Tech Pitches, Architecture Demos & Senior Engineering Interviews
+
+Are you a developer, tech lead, or corporate professional preparing for international roles, stakeholder demos, or executive interviews in English?
+
+I offer targeted, high-impact 1-on-1 English coaching bridging native communication with real-world technology and engineering leadership.
+
+ABOUT ME:
+• Native speaker born and raised in Cambridge, Massachusetts, USA.
+• 10+ years of institutional and corporate language coaching experience (TEFL Certified).
+• Active Senior Systems & Audio Software Engineer (Rust, Next.js, Python, multi-agent systems).
+• Unlike traditional English teachers, I understand software architecture, sprint lifecycles, and technical nuances first-hand.
+
+WHAT WE FOCUS ON:
+1. Technical Interview Mastery: FAANG & European scale-up technical behavioral rounds, system design discussions in natural idiomatic English.
+2. Executive & Stakeholder Presentations: Communicating complex engineering architecture with clarity, gravitas, and natural phrasing.
+3. Pronunciation & Executive Fluency: Eliminating hesitation, mastering natural American cadence, and building unshakeable confidence in meetings.
+
+RATES & PACKAGES:
+• €45 / 60 minutes (Individual Session)
+• Block of 5 sessions: €200 (€40/session)
+• Block of 10 sessions: €380 (€38/session)
+
+Conducted via Google Meet with custom follow-up notes and personalized audio recordings.
+
+Book your introductory diagnostic session:
+Email: spokora9@gmail.com | WhatsApp/Signal: +48 783 570 154</div>
+          </div>
+
+          <div class="action-row">
+            <a href="https://www.e-korepetycje.pl/" target="_blank" class="action-btn primary">e-korepetycje.pl →</a>
+            <a href="https://www.olx.pl/szczecin/edukacja/korepetycje/" target="_blank" class="action-btn secondary">OLX Szczecin →</a>
+            <a href="https://www.superprof.de/" target="_blank" class="action-btn secondary">Superprof.de →</a>
+          </div>
+        </div>
+      </details>
+
+      <!-- Details 3: RouteNote $0 Music Distribution -->
+      <details class="details-card" id="sec-routenote">
+        <summary>
+          <div class="summary-left">
+            <div class="summary-icon">🎸</div>
+            <div class="summary-text">
+              <h3>RouteNote $0 Music Distribution vs. DistroKid</h3>
+              <p>Zero cash upfront distribution for virtual band & instrumental music</p>
+            </div>
+          </div>
+          <div class="summary-badges">
+            <span class="badge-tag tag-emerald">$0 UPFRONT</span>
+            <span class="badge-tag tag-cyan">85% ROYALTIES</span>
+            <span class="chevron">▶</span>
+          </div>
+        </summary>
+        <div class="details-body">
+          <div class="callout success">
+            <h4>🎯 WHY ROUTENOTE UNBLOCKS YOU TONIGHT</h4>
+            <p>DistroKid demands $22.99/year upfront. When cash is zero, that halts releases. <strong>RouteNote has a permanent 100% Free Tier ($0 upfront, no card needed)</strong>. They distribute to Spotify, Apple, YouTube Music, TikTok, Deezer, and Amazon, sending <strong>85% of royalties directly to your PayPal</strong>.</p>
+          </div>
+
+          <h4 style="margin: 14px 0 6px 0; color: var(--accent-gold);">The Visual Execution Strategy (Zero Budget)</h4>
+          <ul class="steps-list">
+            <li><strong>Fretboard + Shadow Aesthetic:</strong> Record your hands playing the fretboard and project your shadow on the wall. Combine with simple Blender audio-reactive visuals.</li>
+            <li><strong>Aquarian Project Mask:</strong> Release under a project pseudonym. This shields your 12th-house Venus and resolves Moon-square-Ascendant vulnerability.</li>
+            <li><strong>RouteNote Account Setup:</strong>
+              <ol style="margin: 6px 0 6px 20px;">
+                <li>Register at <a href="https://routenote.com/" target="_blank" class="task-link">RouteNote.com</a>.</li>
+                <li>Upload 16-bit 44.1kHz WAV master and 3000x3000px artwork.</li>
+                <li>Select "Free Distribution" ($0.00). Live across all DSPs in 3–5 days.</li>
+              </ol>
+            </li>
+          </ul>
+
+          <div class="action-row">
+            <a href="https://routenote.com/" target="_blank" class="action-btn primary">Create Free RouteNote Account →</a>
+          </div>
+        </div>
+      </details>
+
+      <!-- Details 4: Vetted AI Platforms & Blacklist -->
+      <details class="details-card" id="sec-ai-platforms">
+        <summary>
+          <div class="summary-left">
+            <div class="summary-icon">💻</div>
+            <div class="summary-text">
+              <h3>Vetted AI Platforms & Learnship Blacklist</h3>
+              <p>DataAnnotation, Outlier, Alignerr, Mercor</p>
+            </div>
+          </div>
+          <div class="summary-badges">
+            <span class="badge-tag tag-rose">LEARNSHIP WARNING</span>
+            <span class="badge-tag tag-emerald">$40–$150/hr</span>
+            <span class="chevron">▶</span>
+          </div>
+        </summary>
+        <div class="details-body">
+          <div class="callout danger">
+            <h4>🚨 DO NOT APPLY TO LEARNSHIP</h4>
+            <p>Learnship was acquired by <strong>goFLUENT</strong> in late 2025. Contractors have reported chronic invoice payment delays and non-responsive support. Do not spend time applying there.</p>
+          </div>
+
+          <h4 style="margin: 14px 0 6px 0; color: var(--accent-gold);">Vetted Remote Evaluation Rates</h4>
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Platform</th>
+                  <th>Hourly Pay</th>
+                  <th>Payout Cadence</th>
+                  <th>Focus Area</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>DataAnnotation.tech</strong></td>
+                  <td><span class="rate-pill">$40 – $60+/hr</span></td>
+                  <td>Every 3 days (PayPal)</td>
+                  <td>Coding evaluation & prompt review (US Citizen rails)</td>
+                </tr>
+                <tr>
+                  <td><strong>Outlier.ai (Scale AI)</strong></td>
+                  <td><span class="rate-pill">$30 – $50/hr</span></td>
+                  <td>Weekly (PayPal)</td>
+                  <td>Technical reasoning, algorithm verification</td>
+                </tr>
+                <tr>
+                  <td><strong>Alignerr (Labelbox)</strong></td>
+                  <td><span class="rate-pill">$40 – $60/hr</span></td>
+                  <td>Bi-weekly (Deel)</td>
+                  <td>Software engineering & prompt evaluation</td>
+                </tr>
+                <tr>
+                  <td><strong>Mercor</strong></td>
+                  <td><span class="rate-pill">$80 – $150+/hr</span></td>
+                  <td>Direct contract</td>
+                  <td>Rust, multi-agent systems (Houston), audio DSP</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="action-row">
+            <a href="https://outlier.ai/" target="_blank" class="action-btn secondary">Outlier.ai →</a>
+            <a href="https://www.alignerr.com/" target="_blank" class="action-btn secondary">Alignerr →</a>
+            <a href="https://mercor.com/" target="_blank" class="action-btn secondary">Mercor →</a>
+          </div>
+        </div>
+      </details>
+
+    </div>
+
+    <!-- ==================================================== -->
+    <!-- TAB 2: ASTRO CALENDAR (SEPTEMBER & OCTOBER 2026) -->
+    <!-- ==================================================== -->
+    <div class="tab-pane" id="tab-astro">
+      
+      <div class="callout astrology">
+        <h4>🌌 SEPTEMBER–OCTOBER 2026 CANON TRIGGER MAP</h4>
+        <p>Synthesized from Sections 85, 90, 92, 94, 95, 96, and 97. These are the mathematically verified Swiss Ephemeris transits, aspect peaks, and non-negotiable operational laws.</p>
+      </div>
+
+      <div class="timeline-wrap">
+
+        <!-- Sept 8 -->
+        <div class="timeline-node">
+          <div class="timeline-dot critical"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <span class="timeline-date">Tuesday, 8 Sept 2026</span>
+              <span class="timeline-aspect">Moon in Leo · Venus ☌ MC Relocated</span>
+            </div>
+            <div class="timeline-title">Handover & School Meeting: Paternal Dignity</div>
+            <div class="timeline-desc">
+              Moon illuminates your relocated 10th house of public standing and fatherhood. Exalted Venus culminates at the Szczecin Midheaven. Quiet, grounded authority disarms all provocation.
+            </div>
+            <div class="timeline-law">
+              OPERATING LAW: Zero reaction to Diana's bait. Warm, steady eye-contact with Stella. Professional, engaged posture with teachers.
+            </div>
+          </div>
+        </div>
+
+        <!-- Sept 10 -->
+        <div class="timeline-node">
+          <div class="timeline-dot critical"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <span class="timeline-date">Thursday, 10 Sept 2026</span>
+              <span class="timeline-aspect">Transit Pluto ☌ Natal Descendant (Pass 2/3)</span>
+            </div>
+            <div class="timeline-title">Adversary Maneuver Alert (Descendant Contact)</div>
+            <div class="timeline-desc">
+              Pluto crosses the 7th house cusp of open adversaries and legal opponents for the second time. Expect a provoked move, formal court demand, or hostile communication from Diana's side.
+            </div>
+            <div class="timeline-law warning">
+              OPERATING LAW: DO NOT RESPOND SAME-DAY. Fact-only paper log. Enforce a mandatory 24-hour cooling buffer before any formal response.
+            </div>
+          </div>
+        </div>
+
+        <!-- Sept 13-26 -->
+        <div class="timeline-node">
+          <div class="timeline-dot launch"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <span class="timeline-date">13 – 26 Sept 2026</span>
+              <span class="timeline-aspect">The Build Fortnight (Girls Away)</span>
+            </div>
+            <div class="timeline-title">The Golden Deep-Work Sprint</div>
+            <div class="timeline-desc">
+              Fourteen uninterrupted days with zero school runs or domestic friction. Dedicated solely to compounding owned assets into cash-flowing reality.
+            </div>
+            <div class="timeline-law">
+              OPERATING LAW: Deliverables are strictly bounded to THREE: 1. Finish 1 CEFR level bundle; 2. Storefront checkout configuration; 3. TPT draft.
+            </div>
+          </div>
+        </div>
+
+        <!-- Sept 24 -->
+        <div class="timeline-node">
+          <div class="timeline-dot launch"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <span class="timeline-date">Thursday, 24 Sept 2026</span>
+              <span class="timeline-aspect">Transit Jupiter △ Natal Midheaven (Pass 1/3)</span>
+            </div>
+            <div class="timeline-title">The Best Public Launch Window of 2026</div>
+            <div class="timeline-desc">
+              Jupiter makes an exact trine to your natal Midheaven. Maximum public favor, professional visibility, and algorithmic receptivity.
+            </div>
+            <div class="timeline-law">
+              OPERATING LAW: Make public-facing portfolio and coach presence live. Reveal what was crafted in private.
+            </div>
+          </div>
+        </div>
+
+        <!-- Before Oct 3 -->
+        <div class="timeline-node">
+          <div class="timeline-dot saturn"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <span class="timeline-date">Before 3 Oct 2026</span>
+              <span class="timeline-aspect">Venus Stations Retrograde (29° Scorpio / 12H)</span>
+            </div>
+            <div class="timeline-title">Brand & Identity Lock</div>
+            <div class="timeline-desc">
+              Venus halts in late Scorpio in your relocated 12th house before reversing. Retrogrades distort public re-branding and aesthetic pivoting.
+            </div>
+            <div class="timeline-law">
+              OPERATING LAW: Lock project names, domain registrations, and brand identity permanently. No rebranding during retrograde.
+            </div>
+          </div>
+        </div>
+
+        <!-- By Oct 6 -->
+        <div class="timeline-node">
+          <div class="timeline-dot saturn"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <span class="timeline-date">By Tuesday, 6 Oct 2026</span>
+              <span class="timeline-aspect">Transit Saturn □ Natal Venus (Pass 2/3)</span>
+            </div>
+            <div class="timeline-title">The Pricing Discipline Gate</div>
+            <div class="timeline-desc">
+              Saturn demands structural realism and commercial boundary enforcement on your artistic and linguistic work.
+            </div>
+            <div class="timeline-law">
+              OPERATING LAW: Price every single object in writing. Mic Station ($49/$69), CEFR Worksheet Bundle ($29.95), Coaching (€45/hr).
+            </div>
+          </div>
+        </div>
+
+        <!-- Week of Oct 12 -->
+        <div class="timeline-node">
+          <div class="timeline-dot launch"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <span class="timeline-date">Week of 12 Oct 2026</span>
+              <span class="timeline-aspect">Saturnian Release Window</span>
+            </div>
+            <div class="timeline-title">Ship Mic Station VST Plugin</div>
+            <div class="timeline-desc">
+              Release the bounded 8-mic emulation plugin. Break the 95% perfectionist loop by shipping signed installers and live checkout.
+            </div>
+            <div class="timeline-law">
+              OPERATING LAW: Signed installers, 8 presets, 1-page manual, KVR listing, live Lemon Squeezy buy button.
+            </div>
+          </div>
+        </div>
+
+        <!-- Week of Oct 19 -->
+        <div class="timeline-node">
+          <div class="timeline-dot launch"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <span class="timeline-date">Week of 19 Oct 2026</span>
+              <span class="timeline-aspect">Marketplace Listing Window</span>
+            </div>
+            <div class="timeline-title">List CEFR Worksheet Bundle on TPT</div>
+            <div class="timeline-desc">
+              Upload the B1/B2 grammar visual worksheet package to Teachers Pay Teachers (TPT Basic) and your own store.
+            </div>
+            <div class="timeline-law">
+              OPERATING LAW: Digital asset compounding. Generates recurring passive income from global ESL educators.
+            </div>
+          </div>
+        </div>
+
+        <!-- By Oct 23 -->
+        <div class="timeline-node">
+          <div class="timeline-dot launch"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <span class="timeline-date">By Friday, 23 Oct 2026</span>
+              <span class="timeline-aspect">Transit Jupiter ☌ Natal Cusp 2 (Pass 1/3)</span>
+            </div>
+            <div class="timeline-title">The Second House Financial Threshold</div>
+            <div class="timeline-desc">
+              Jupiter enters your natal 2nd house of liquid cash and personal earnings. Jupiter magnifies what already exists and ignores unfinished drafts.
+            </div>
+            <div class="timeline-law">
+              OPERATING LAW: Everything must be priced and buyable. Submit first 5–10 sync cues to Pond5 and AudioSparx.
+            </div>
+          </div>
+        </div>
+
+        <!-- Oct 24 -->
+        <div class="timeline-node">
+          <div class="timeline-dot critical"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <span class="timeline-date">Saturday, 24 Oct 2026</span>
+              <span class="timeline-aspect">Protective Timing Gate</span>
+            </div>
+            <div class="timeline-title">The Silence Shield</div>
+            <div class="timeline-desc">
+              Critical astrological vulnerability for signing contracts or making definitive written statements.
+            </div>
+            <div class="timeline-law warning">
+              OPERATING LAW: DO NOT SIGN AND DO NOT SEND THE IMPORTANT LETTER. Extreme restraint in legal and personal correspondence.
+            </div>
+          </div>
+        </div>
+
+        <!-- After Oct 28 -->
+        <div class="timeline-node">
+          <div class="timeline-dot saturn"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <span class="timeline-date">After 28 Oct 2026</span>
+              <span class="timeline-aspect">zr_fortune Hands to Capricorn (27 Saturn Months)</span>
+            </div>
+            <div class="timeline-title">The Consolidation Epoch Begins</div>
+            <div class="timeline-desc">
+              Zodiacal Releasing from Fortune transitions to Saturn-ruled Capricorn for 27 months. The era of starting new experiments closes.
+            </div>
+            <div class="timeline-law">
+              OPERATING LAW: STOP STARTING. Finish, automate, compound, and maintain the existing catalogue.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==================================================== -->
+    <!-- TAB 3: PATERNAL PROTOCOL (TUESDAY HANDOVER) -->
+    <!-- ==================================================== -->
+    <div class="tab-pane" id="tab-paternal">
+      
+      <div class="callout warning">
+        <h4>🛡️ THE PATERNAL ANCHOR: "Grey Rock with Warmth"</h4>
+        <p>Diana's dynamic relies on provoking an emotional reaction to manufacture claims of conflict for court proceedings. When you remain grounded, courteous, and emotionally untouchable, her entire apparatus collapses. You are the unshakable pillar in Stella's life.</p>
+      </div>
+
+      <div class="checklist-card">
+        <h4 style="color: var(--accent-gold); margin-bottom: 12px;">Tactical Rules for Tuesday Handover & School Conference:</h4>
+        
+        <ul class="steps-list">
+          <li>
+            <strong>1. Handover Dynamic with Stella:</strong>
+            When you see Stella, your energy belongs 100% to her. Drop to her eye level, smile, and give her a steady, loving hug. Do not look at Diana for permission. Stella absorbs your nervous system—when you are calm and joyful, she feels completely safe.
+          </li>
+          <li>
+            <strong>2. Deflecting Diana's Bait:</strong>
+            If Diana sighs, makes passive-aggressive comments, or mentions money/court paperwork:
+            <div class="callout danger" style="margin: 8px 0;">
+              <strong>The Iron Defense:</strong><br>
+              • Do not explain.<br>
+              • Do not defend.<br>
+              • Do not attack back.<br>
+              Use the universal deflection: <em>"I hear you. Let's keep our focus on Stella today."</em> or give a courteous, flat nod.
+            </div>
+          </li>
+          <li>
+            <strong>3. At the School Conference:</strong>
+            Present as the consummate, engaged, professional father:
+            <ul style="margin: 6px 0 6px 20px;">
+              <li>Ask the teacher about Stella's reading progress, friendships, and how she is settling into the new grade.</li>
+              <li>Offer concrete support: <em>"I am always available to support her school projects and reading at home. Please keep me directly copied on all teacher communications."</em></li>
+              <li>Never contradict Diana in front of the teacher. Simply state your own position calmly: <em>"At home, Stella thrives when we have structured reading routines each evening."</em></li>
+            </ul>
+          </li>
+          <li>
+            <strong>4. Private Fact-Only Paper Log:</strong>
+            Immediately following the meeting, do NOT text Diana. Open your private physical journal and log:
+            <div class="callout" style="margin: 6px 0;">
+              • Exact time of arrival and departure.<br>
+              • Demeanor of all parties.<br>
+              • School staff present.<br>
+              • Key academic topics agreed upon.<br>
+              Strictly objective facts. This builds an unassailable court record over time.
+            </div>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- ==================================================== -->
+    <!-- TAB 4: PRODUCT SHIP LIST -->
+    <!-- ==================================================== -->
+    <div class="tab-pane" id="tab-products">
+      
+      <div class="callout astrology">
+        <h4>📦 THE AUTUMN SHIP LIST (SECTIONS 54, 89 & 94)</h4>
+        <p><em>"The chart funds objects. Small, owned, emotionally-mined artifacts that compound into a catalogue. Built by hand, then automated."</em></p>
+      </div>
+
+      <!-- Mic Station Card -->
+      <div class="checklist-card">
+        <h4 style="color: var(--accent-gold); display: flex; justify-content: space-between;">
+          <span>1. Mic Station (8-Emulation Audio Plugin)</span>
+          <span class="rate-pill">$49 Intro / $69</span>
+        </h4>
+        <p style="font-size: 0.8rem; color: var(--accent-rose); margin-top: 4px;">
+          ⚠️ STATUS: ~95% COMPLETE — THE PERFECTIONIST STALL ZONE. DO NOT REFACTOR DSP!
+        </p>
+        <div style="margin: 10px 0;">
+          <h5 style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase;">Closed Release Checklist:</h5>
+          <ol style="margin: 6px 0 6px 20px; font-size: 0.82rem; color: var(--text-main); line-height: 1.6;">
+            <li>Package existing 8 mic emulations into signed Windows VST3 and Mac AU installers.</li>
+            <li>Export 8 factory presets (one per mic model) with default output levels.</li>
+            <li>Write 1-page PDF quickstart manual (knob functions, vocal chains).</li>
+            <li>Record 3 audio A/B demo clips.</li>
+            <li>Connect Lemon Squeezy buy button. Ship week of Oct 12.</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- CEFR Worksheet Bundle Card -->
+      <div class="checklist-card">
+        <h4 style="color: var(--accent-cyan); display: flex; justify-content: space-between;">
+          <span>2. CEFR Visual Grammar Worksheet Bundle</span>
+          <span class="rate-pill">$29.95 TPT</span>
+        </h4>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+          STATUS: ~90% COMPLETE — Package 20–40 visual worksheets from the CEFR engine.
+        </p>
+        <div style="margin: 10px 0;">
+          <h5 style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase;">Action Steps:</h5>
+          <ol style="margin: 6px 0 6px 20px; font-size: 0.82rem; color: var(--text-main); line-height: 1.6;">
+            <li>Extract 1 level bundle (B1 or B2 grammar & vocab).</li>
+            <li>Include answer keys and teacher notes.</li>
+            <li>List on Teachers Pay Teachers (TPT Basic) and own site before Oct 19.</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Virtual Band RouteNote Card -->
+      <div class="checklist-card">
+        <h4 style="color: var(--accent-emerald); display: flex; justify-content: space-between;">
+          <span>3. Masked Virtual Band EP Releases</span>
+          <span class="rate-pill">$0 Upfront / 85% Royalties</span>
+        </h4>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+          Monthly 3–5 track releases distributed via RouteNote free pipe.
+        </p>
+        <div style="margin: 10px 0;">
+          <h5 style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase;">Production Pipeline:</h5>
+          <ol style="margin: 6px 0 6px 20px; font-size: 0.82rem; color: var(--text-main); line-height: 1.6;">
+            <li>Daily raw take (guitar, harmonica, synth).</li>
+            <li>One monthly batch production session to compile the EP.</li>
+            <li>Record fretboard & shadow footage + Blender audio-reactive visualizer.</li>
+            <li>Upload to RouteNote Free tier for worldwide distribution.</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Sync Licensing Card -->
+      <div class="checklist-card">
+        <h4 style="color: var(--accent-purple); display: flex; justify-content: space-between;">
+          <span>4. Sync Licensing & Production Music</span>
+          <span class="rate-pill">Passive Royalties</span>
+        </h4>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+          Submit 5–10 instrumental cues before Oct 23 (Jupiter on Cusp 2).
+        </p>
+        <div style="margin: 10px 0;">
+          <h5 style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase;">Action Steps:</h5>
+          <ol style="margin: 6px 0 6px 20px; font-size: 0.82rem; color: var(--text-main); line-height: 1.6;">
+            <li>Cut 5 cleanest instrumental takes with key/BPM tags.</li>
+            <li>Export stems and 30-sec/60-sec broadcast edits.</li>
+            <li>Upload to Pond5 and AudioSparx non-exclusive catalogs.</li>
+          </ol>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Tab Switching
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
+      
+      const target = document.getElementById(tabId);
+      if (target) target.classList.add('active');
+      if (btn) btn.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // LocalStorage Checklist Persistence
+    const STORAGE_KEY = 'astro_cash_ops_checklist_v2';
+
+    function loadChecklistState() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          const state = JSON.parse(saved);
+          Object.keys(state).forEach(id => {
+            const el = document.getElementById(id);
+            if (el && el.type === 'checkbox') {
+              el.checked = state[id];
+            }
+          });
+        } catch (e) {
+          console.error('Failed to parse checklist state', e);
+        }
+      }
+      updateProgress();
+    }
+
+    function saveChecklistState() {
+      const checkboxes = document.querySelectorAll('.task-checkbox');
+      const state = {};
+      checkboxes.forEach(cb => {
+        state[cb.id] = cb.checked;
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function updateProgress() {
+      const checkboxes = document.querySelectorAll('.task-checkbox');
+      const total = checkboxes.length;
+      let checked = 0;
+      checkboxes.forEach(cb => {
+        if (cb.checked) checked++;
+      });
+
+      const percent = total > 0 ? Math.round((checked / total) * 100) : 0;
+      const fillEl = document.getElementById('progressBarFill');
+      const textEl = document.getElementById('progressText');
+
+      if (fillEl) fillEl.style.width = percent + '%';
+      if (textEl) textEl.textContent = `${percent}% (${checked}/${total})`;
+
+      saveChecklistState();
+    }
+
+    function resetChecklist() {
+      if (confirm('Reset all checklist items?')) {
+        const checkboxes = document.querySelectorAll('.task-checkbox');
+        checkboxes.forEach(cb => cb.checked = false);
+        updateProgress();
+      }
+    }
+
+    function checkAll() {
+      const checkboxes = document.querySelectorAll('.task-checkbox');
+      checkboxes.forEach(cb => cb.checked = true);
+      updateProgress();
+    }
+
+    function openAndScroll(sectionId) {
+      // Ensure we are on Cash Ops tab
+      switchTab('tab-cash', document.querySelector('.nav-tab-btn.gold'));
+      setTimeout(() => {
+        const details = document.getElementById(sectionId);
+        if (details) {
+          details.open = true;
+          details.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 50);
+    }
+
+    function copyToClipboard(elementId) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      const text = el.innerText || el.textContent;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          alert('Copied to clipboard! Ready to paste.');
+        }).catch(() => {
+          fallbackCopy(text);
+        });
+      } else {
+        fallbackCopy(text);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      alert('Copied to clipboard! Ready to paste.');
+    }
+
+    // Dynamic Header Date
+    const now = new Date();
+    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+    const dateStr = now.toLocaleDateString('en-US', options);
+    const dateEl = document.getElementById('topDateSubtitle');
+    if (dateEl) {
+      dateEl.textContent = `${dateStr} · Dual US/PL Currency Pipe`;
+    }
+
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('ServiceWorker registered:', reg.scope))
+          .catch(err => console.log('ServiceWorker registration failed:', err));
+      });
+    }
+
+    // PWA Install Prompt Handling
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const banner = document.getElementById('pwaBanner');
+      if (banner) banner.classList.add('show');
+    });
+
+    function triggerPWAInstall() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted PWA installation');
+          }
+          deferredPrompt = null;
+          const banner = document.getElementById('pwaBanner');
+          if (banner) banner.classList.remove('show');
+        });
+      } else {
+        alert('To install on iPhone: tap the Share button in Safari and choose "Add to Home Screen". On Android, tap the three dots in Chrome and choose "Install app" or "Add to Home Screen".');
+      }
+    }
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', loadChecklistState);
+  </script>
+</body>
+</html>
